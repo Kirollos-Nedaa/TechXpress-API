@@ -11,9 +11,11 @@ Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<MongoDbSettings>(
-    builder.Configuration.GetSection("MongoDbSettings")
-);
+builder.Services.Configure<MongoDbSettings>(options =>
+{
+    options.ConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING");
+    options.DatabaseName = Environment.GetEnvironmentVariable("MONGODB_DATABASE_NAME");
+});
 builder.Services.AddSingleton<IMongoClient>(s =>
 {
     var settings = s.GetRequiredService<IOptions<MongoDbSettings>>().Value;
